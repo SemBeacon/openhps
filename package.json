@@ -20,13 +20,11 @@
   "types": "./dist/types/index.d.ts",
   "unpkg": "./dist/web/sembeacon-openhps.min.js",
   "jsdelivr": "./dist/web/sembeacon-openhps.min.js",
-  "lsd:module": true,
   "module": "./dist/esm5/index.js",
   "es2015": "./dist/esm/index.js",
   "files": [
     "dist/**/*",
     "src/**/*",
-    "config/**/*.json",
     "LICENSE"
   ],
   "scripts": {
