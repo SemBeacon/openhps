@@ -30,7 +30,7 @@ jobs:
           yarn install
       - name: Build
         run: |
-        yarn run build
+          yarn run build
       - name: Upload web artifacts
         uses: actions/upload-artifact@v2
         with:
