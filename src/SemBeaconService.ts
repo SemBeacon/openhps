@@ -25,6 +25,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     constructor(driver?: DataServiceDriver<string, BLEBeaconObject>, options?: SemBeaconServiceOptions) {
         super(driver);
         this.options = options ?? { cors: true, accessToken: undefined };
+        this.uid = options.uid ?? this.uid;
     }
 
     protected _findByUID(uid: string): Promise<BLEBeaconObject> {
@@ -366,6 +367,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
 export interface SemBeaconServiceOptions extends DataServiceOptions {
     cors?: boolean;
     accessToken?: string;
+    uid?: string;
 }
 
 export interface ResolveOptions {
