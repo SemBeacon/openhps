@@ -3,6 +3,7 @@
         "target": "es6",
         "module": "commonjs",
         "moduleResolution": "node",
+        "lib": ["es2021"],
         "noImplicitAny": false,
         "noEmitHelpers": true,
         "importHelpers": true,
