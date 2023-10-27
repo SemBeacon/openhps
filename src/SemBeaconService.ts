@@ -137,6 +137,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                     resolveAll: true,
                 })
                     .then((beacons) => {
+                        beacons.result.resourceData = new Store(beacons.data);
                         if (beacons.beacons) {
                             return Promise.all(
                                 beacons.beacons.map((b) => {

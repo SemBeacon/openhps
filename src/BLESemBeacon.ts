@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { NumberType, SerializableMember, SerializableObject } from '@openhps/core';
-import { DataFactory, IriString, Thing, UrlString, xsd } from '@openhps/rdf';
+import { DataFactory, IriString, Store, Thing, UrlString, xsd } from '@openhps/rdf';
 import { BLEBeaconObject, BLEEddystoneURL, BLEService, BLEUUID, BufferUtils } from '@openhps/rf';
 
 /**
@@ -95,6 +95,9 @@ export class BLESemBeacon extends BLEBeaconObject {
         },
     })
     shortResourceUri: UrlString;
+
+    // Transient
+    resourceData: Store;
 
     /**
      * Modified timestamp
