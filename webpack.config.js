@@ -69,13 +69,13 @@ const bundle = (env, module) => ({
       amd: 'core',
       root: ['OpenHPS', 'core']
     },
-    '@openhps/rdf': module ? "./openhps-rdf.es" + (env.prod ? ".min" : "") + ".js" : {
+    '@openhps/rdf': module ? "./openhps-rdf.all.es" + (env.prod ? ".min" : "") + ".js" : {
       commonjs: '@openhps/rdf',
       commonjs2: '@openhps/rdf',
       amd: 'rdf',
       root: ['OpenHPS', 'rdf']
     },
-    '@openhps/rf': module ? "./openhps-rf.all.es" + (env.prod ? ".min" : "") + ".js" : {
+    '@openhps/rf': module ? "./openhps-rf.es" + (env.prod ? ".min" : "") + ".js" : {
       commonjs: '@openhps/rf',
       commonjs2: '@openhps/rf',
       amd: 'rf',
