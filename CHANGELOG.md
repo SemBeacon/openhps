@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.1 (2023-10-27)
+
+
+### Bug Fixes
+
+* resource data in insert output ([9e04464](https://github.com/SemBeacon/openhps/commit/9e04464284db7a311c17496e8dd3f53a51086b0c))
+
 ## 1.2.0 (2023-10-27)
 
 
