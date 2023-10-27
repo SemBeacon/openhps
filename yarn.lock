@@ -2519,10 +2519,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openhps/core@>=0.5.13":
-  version "0.5.13"
-  resolved "https://registry.yarnpkg.com/@openhps/core/-/core-0.5.13.tgz#936766230412bf38021c7e4349a660e122b04945"
-  integrity sha512-U5rkJ0uMVufKPUiwIoG60+5S8AfpWf2ZBMiIoxf1DKNEv9CIm7yij2udSazmE7dlzWfPk6QrZDgIPG3U6TN9uA==
+"@openhps/core@>=0.5.14":
+  version "0.5.14"
+  resolved "https://registry.yarnpkg.com/@openhps/core/-/core-0.5.14.tgz#f08740940b2f3d06b541f4cbced7c8893aeaaa87"
+  integrity sha512-WvvbOqhHRX/qvGky/OfHft04+QVI9hW13qQ56unr+aOFFE6EpU8p3Fx6eY2L+VvDf3QFnc01R1zTnkHHpM4kdQ==
   dependencies:
     lodash.clonedeep "^4.5.0"
     reflect-metadata ">=0.1.13"
@@ -2530,15 +2530,16 @@
     typedjson "^1.8.0"
     uuid "^9.0.1"
 
-"@openhps/rdf@^0.4.18":
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/@openhps/rdf/-/rdf-0.4.18.tgz#d41b8da5b6dddc4c5af76a9f092c08caabf4c0e0"
-  integrity sha512-gvTsZza8UGU6PJOUw0RLIK5enKmAc85TwyMeVZFyyGT+0KFtxYb/PQI5dvf1/JjcrHkB679eam4McwqSB8Wr7g==
+"@openhps/rdf@^0.4.19":
+  version "0.4.19"
+  resolved "https://registry.yarnpkg.com/@openhps/rdf/-/rdf-0.4.19.tgz#845a9eaf6cc3bf9d787be7fed30ad2113f5aa911"
+  integrity sha512-xod51f3YKa/yVdI53W2IKmQxPY+pmnw1hVIT/hMYhVGbjiMQyR5LwqK2C8DBz27c12g8CRI7sDVw9v+deIGhkg==
   dependencies:
     "@comunica/query-sparql" "^2.9.0"
     "@types/n3" "^1.16.3"
     n3 ">=1.17.1"
     sparqljs "^3.7.1"
+    wkt "^0.1.1"
 
 "@openhps/rf@^0.1.61":
   version "0.1.61"
@@ -3252,10 +3253,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-axios@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.5.1.tgz#11fbaa11fc35f431193a9564109c88c1f27b585f"
-  integrity sha512-Q28iYCWzNHjAm+yEAot5QaAMxhMghWLFVf7rRdwhUI+c2jix2DUXjAHXVi+s1ibs3mjPO/cCgbA++3BjD0vP/A==
+axios@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.0.tgz#f1e5292f26b2fd5c2e66876adc5b06cdbd7d2102"
+  integrity sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==
   dependencies:
     follow-redirects "^1.15.0"
     form-data "^4.0.0"

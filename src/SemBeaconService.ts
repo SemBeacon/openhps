@@ -1,5 +1,5 @@
 import { BLESemBeacon } from './BLESemBeacon';
-import { DataObjectService, DataServiceDriver, DataServiceOptions, TimeService } from '@openhps/core';
+import { DataObjectService, DataServiceDriver, DataServiceOptions, Model, TimeService } from '@openhps/core';
 import {
     DataFactory,
     DefaultEngine,
@@ -22,10 +22,27 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     protected options: SemBeaconServiceOptions;
     protected queue: Set<string> = new Set();
 
+    /**
+     * Create a new SemBeaconService. When no driver is provided, it will search for
+     * an external BLEBeaconObject data service.
+     * @param {DataServiceDriver | null} [driver] Data service driver to store SemBeacons
+     * @param {SemBeaconServiceOptions} [options] service options
+     */
     constructor(driver?: DataServiceDriver<string, BLEBeaconObject>, options?: SemBeaconServiceOptions) {
         super(driver);
         this.options = options ?? { cors: true, accessToken: undefined };
         this.uid = options.uid ?? this.uid;
+        this.once('build', this._onBuild.bind(this));
+    }
+
+    private _onBuild(): Promise<void> {
+        return new Promise((resolve) => {
+            if (this.driver === null) {
+                const service = (this.model as Model).findDataService(BLEBeaconObject);
+                this.driver = (service as any).driver; // Experimental
+            }
+            resolve();
+        });
     }
 
     protected _findByUID(uid: string): Promise<BLEBeaconObject> {
