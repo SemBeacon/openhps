@@ -200,6 +200,11 @@ export class BLESemBeacon extends BLEBeaconObject {
         return this;
     }
 
+    removeFlag(flag: number): this {
+        this.flags = this.flags ^ flag;
+        return this;
+    }
+
     protected get service(): BLEService {
         return this.getServiceByUUID(BLEUUID.fromString('FEAA'));
     }
