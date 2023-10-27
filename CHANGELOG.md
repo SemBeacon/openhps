@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0 (2023-10-27)
+
+
+### Features
+
+* initialize sembeaconservice without driver ([ca8ee48](https://github.com/SemBeacon/openhps/commit/ca8ee48a8ab51c0f9e6dccea67222d0b958beb7f))
+
 ### 1.0.7 (2023-10-27)
 
 
