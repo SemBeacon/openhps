@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.0.7 (2023-10-27)
+
+
+### Bug Fixes
+
+* rdf es module ([dec4126](https://github.com/SemBeacon/openhps/commit/dec41263e4c18622554d648bb31b9f236d7b3cc8))
+
 ### 1.0.6 (2023-10-26)
 
 
