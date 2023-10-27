@@ -12,9 +12,10 @@ import {
     Store,
     UrlString,
 } from '@openhps/rdf';
-import { BLEBeaconObject } from '@openhps/rf';
+import { BLEBeaconObject, BLEiBeacon } from '@openhps/rf';
 import axios, { AxiosResponse } from 'axios';
 
+console.log(RDFSerializer.serialize(new BLEiBeacon()).predicates);
 /**
  * SemBeacon data object service for persisting and retrieving SemBeacon data
  */
