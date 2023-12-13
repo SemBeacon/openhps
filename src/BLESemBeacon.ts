@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { NumberType, SerializableMember, SerializableObject } from '@openhps/core';
 import { DataFactory, IriString, Store, Thing, UrlString, xsd } from '@openhps/rdf';
 import { BLEBeaconObject, BLEEddystoneURL, BLEService, BLEUUID, BufferUtils } from '@openhps/rf';
+import { sembeacon } from './terms';
 
 /**
  * SemBeacon Flags
@@ -21,7 +22,7 @@ export const SEMBEACON_FLAG_UNDEFINED = 0x00;
  */
 @SerializableObject({
     rdf: {
-        type: 'http://purl.org/sembeacon/SemBeacon',
+        type: sembeacon.SemBeacon,
         deserializer: (thing) => {
             const beacon = new BLESemBeacon();
             beacon.resourceUri = thing.value as IriString;
@@ -44,7 +45,7 @@ export class BLESemBeacon extends BLEBeaconObject {
 
     @SerializableMember({
         rdf: {
-            predicate: 'http://purl.org/sembeacon/namespaceId',
+            predicate: sembeacon.namespaceId,
             datatype: xsd.hexBinary,
             serializer: (value: BLEUUID) => {
                 if (!value) {
@@ -64,7 +65,7 @@ export class BLESemBeacon extends BLEBeaconObject {
 
     @SerializableMember({
         rdf: {
-            predicate: 'http://purl.org/sembeacon/instanceId',
+            predicate: sembeacon.instanceId,
             datatype: xsd.hexBinary,
             serializer: (value: BLEUUID) => {
                 if (!value) {
@@ -90,7 +91,7 @@ export class BLESemBeacon extends BLEBeaconObject {
     @SerializableMember({
         constructor: String,
         rdf: {
-            predicate: 'http://purl.org/sembeacon/shortResourceURI',
+            predicate: sembeacon.shortResourceURI,
             datatype: xsd.anyURI,
         },
     })
