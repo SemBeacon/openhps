@@ -1,16 +1,7 @@
 type IriString = `${'http' | 'https'}://${string}`;
-type Property = IriString;
-type Class = IriString;
-type Datatype = IriString;
 type OwlClass = IriString;
 type OwlObjectProperty = IriString;
 type OwlDatatypeProperty = IriString;
-type HydraResource = IriString;
-type HydraClass = IriString;
-type HydraLink = IriString;
-type HydraTemplatedLink = IriString;
-type HydraVariableRepresentation = IriString;
-type OtherIndividual = IriString;
 
 /**
  * SemBeacon
