@@ -4,17 +4,17 @@
   @sembeacon/openhps
 </h1>
 <p align="center">
-    <a href="https://github.com/OpenHPS/openhps-csv/actions/workflows/main.yml" target="_blank">
-        <img alt="Build Status" src="https://github.com/OpenHPS/openhps-csv/actions/workflows/main.yml/badge.svg">
+    <a href="https://github.com/SemBeacon/openhps/actions/workflows/main.yml" target="_blank">
+        <img alt="Build Status" src="https://github.com/SemBeacon/openhps/actions/workflows/main.yml/badge.svg">
     </a>
-    <a href="https://codecov.io/gh/OpenHPS/openhps-csv">
-        <img src="https://codecov.io/gh/OpenHPS/openhps-csv/branch/master/graph/badge.svg?token=U896HUBDCZ"/>
+    <a href="https://codecov.io/gh/SemBeacon/openhps">
+        <img src="https://codecov.io/gh/SemBeacon/openhps/branch/master/graph/badge.svg?token=U896HUBDCZ"/>
     </a>
-    <a href="https://codeclimate.com/github/OpenHPS/openhps-csv/" target="_blank">
-        <img alt="Maintainability" src="https://img.shields.io/codeclimate/maintainability/OpenHPS/openhps-csv">
+    <a href="https://codeclimate.com/github/SemBeacon/openhps/" target="_blank">
+        <img alt="Maintainability" src="https://img.shields.io/codeclimate/maintainability/SemBeacon/openhps">
     </a>
-    <a href="https://badge.fury.io/js/@openhps%2Fcsv">
-        <img src="https://badge.fury.io/js/@openhps%2Fcsv.svg" alt="npm version" height="18">
+    <a href="https://badge.fury.io/js/@sembeacon%2Fopenhps">
+        <img src="https://badge.fury.io/js/@sembeacon%2Fopenhps.svg" alt="npm version" height="18">
     </a>
 </p>
 
@@ -31,6 +31,9 @@ If you have [npm installed](https://www.npmjs.com/get-npm), start using @sembeac
 ```bash
 npm install @sembeacon/openhps --save
 ```
+
+## Usage
+
 
 ## Contributors
 The framework is open source and is mainly developed by PhD Student Maxim Van de Wynckel as part of his research towards *Hybrid Positioning and Implicit Human-Computer Interaction* under the supervision of Prof. Dr. Beat Signer.

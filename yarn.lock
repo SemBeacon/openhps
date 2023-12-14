@@ -2895,7 +2895,7 @@
     cubic-spline "^3.0.3"
     uuid "^9.0.0"
 
-"@openhps/geospatial@>=0.1.28":
+"@openhps/geospatial@>=0.1.29":
   version "0.1.29"
   resolved "https://registry.yarnpkg.com/@openhps/geospatial/-/geospatial-0.1.29.tgz#090f097ab6562cde46176b4035368fd8e0e984bc"
   integrity sha512-twdTDl8qQMxfGYZnQe4rXCmhL3Bn0yBcHgweC59bvZ5P1/3RewyexN4o6QeGwd2xNb9s2Q2TW90v2TRUeKbvKg==
@@ -2904,21 +2904,22 @@
     robust-predicates "^3.0.2"
     wkt "^0.1.1"
 
-"@openhps/rdf@^0.4.32":
-  version "0.4.32"
-  resolved "https://registry.yarnpkg.com/@openhps/rdf/-/rdf-0.4.32.tgz#b6c5db1430fd6d768345dc2edf8c97bc207b3c43"
-  integrity sha512-/LakxEUu7HVnfJExZ7PLqv4ud7F+X+P/db0a8UQ729T5Q9EsmHCoGNn9P67pZTk63HI89iOKn/akswphUsJegg==
+"@openhps/rdf@^0.4.36":
+  version "0.4.36"
+  resolved "https://registry.yarnpkg.com/@openhps/rdf/-/rdf-0.4.36.tgz#b1bcdff4ba0479a2916c610a3e0063a3e3f26f5c"
+  integrity sha512-fGTQVBI9/0Op+xEmS4K/rGO1KufpvdobspClho2Elp7dIAQvGjjDAcP2pDZAX7agu9TRKyZCC7/3WtZiFWFZtw==
   dependencies:
     "@comunica/query-sparql" "^2.10.1"
     "@inquirer/prompts" "^3.3.0"
     "@types/n3" "^1.16.4"
+    axios "^1.6.2"
     chalk "^4"
     n3 "^1.17.2"
     sparqljs "^3.7.1"
     wkt "^0.1.1"
   optionalDependencies:
     "@openhps/fingerprinting" ">=0.1.5"
-    "@openhps/geospatial" ">=0.1.28"
+    "@openhps/geospatial" ">=0.1.29"
     "@openhps/rf" ">=0.1.61"
     "@openhps/video" ">=0.1.14"
 
@@ -4799,10 +4800,10 @@ eslint-plugin-import@^2.29.0:
     semver "^6.3.1"
     tsconfig-paths "^3.14.2"
 
-eslint-plugin-jsdoc@^46.9.0:
-  version "46.9.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-46.9.0.tgz#9887569dbeef0a008a2770bfc5d0f7fc39f21f2b"
-  integrity sha512-UQuEtbqLNkPf5Nr/6PPRCtr9xypXY+g8y/Q7gPa0YK7eDhh0y2lWprXRnaYbW7ACgIUvpDKy9X2bZqxtGzBG9Q==
+eslint-plugin-jsdoc@^46.9.1:
+  version "46.9.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsdoc/-/eslint-plugin-jsdoc-46.9.1.tgz#d30adce51fecc768e87481bf4de46b8618c3d50e"
+  integrity sha512-11Ox5LCl2wY7gGkp9UOyew70o9qvii1daAH+h/MFobRVRNcy7sVlH+jm0HQdgcvcru6285GvpjpUyoa051j03Q==
   dependencies:
     "@es-joy/jsdoccomment" "~0.41.0"
     are-docs-informative "^0.0.2"
@@ -4812,7 +4813,7 @@ eslint-plugin-jsdoc@^46.9.0:
     esquery "^1.5.0"
     is-builtin-module "^3.2.1"
     semver "^7.5.4"
-    spdx-expression-parse "^3.0.1"
+    spdx-expression-parse "^4.0.0"
 
 eslint-plugin-prettier@^5.0.1:
   version "5.0.1"
@@ -7364,10 +7365,10 @@ reflect-metadata@>=0.1.13:
   resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
   integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
 
-reflect-metadata@>=0.1.14:
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.14.tgz#24cf721fe60677146bb77eeb0e1f9dece3d65859"
-  integrity sha512-ZhYeb6nRaXCfhnndflDK8qI6ZQ/YcWZCISRAWICW9XYqMUwjZM9Z0DveWX/ABN01oxSHwVxKQmxeYZSsm0jh5A==
+reflect-metadata@>=0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.2.0.tgz#e40299bf27422fe672b905468f34152a96efcaf7"
+  integrity sha512-vUN0wuk3MuhSVMfU/ImnPQAK8QZcXJ339DtVsP3jDscxCe6dT+PsOe3J1BYS9Ec2Fd4oC6ry6bCBebzTya0IYw==
 
 regexp.prototype.flags@^1.5.1:
   version "1.5.1"
@@ -7819,10 +7820,18 @@ spdx-exceptions@^2.1.0:
   resolved "https://registry.yarnpkg.com/spdx-exceptions/-/spdx-exceptions-2.3.0.tgz#3f28ce1a77a00372683eade4a433183527a2163d"
   integrity sha512-/tTrYOC7PPI1nUAgx34hUpqXuyJG+DTHJTnIULG4rDygi4xu/tfgmq1e1cIRwRzwZgo4NLySi+ricLkZkw4i5A==
 
-spdx-expression-parse@^3.0.0, spdx-expression-parse@^3.0.1:
+spdx-expression-parse@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/spdx-expression-parse/-/spdx-expression-parse-3.0.1.tgz#cf70f50482eefdc98e3ce0a6833e4a53ceeba679"
   integrity sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==
+  dependencies:
+    spdx-exceptions "^2.1.0"
+    spdx-license-ids "^3.0.0"
+
+spdx-expression-parse@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/spdx-expression-parse/-/spdx-expression-parse-4.0.0.tgz#a23af9f3132115465dac215c099303e4ceac5794"
+  integrity sha512-Clya5JIij/7C6bRR22+tnGXbc4VKlibKSVj2iHvVeX5iMW7s1SIQlqu699JkODJJIhh/pUu8L0/VLh8xflD+LQ==
   dependencies:
     spdx-exceptions "^2.1.0"
     spdx-license-ids "^3.0.0"
