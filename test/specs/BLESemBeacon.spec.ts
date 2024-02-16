@@ -32,7 +32,7 @@ describe('BLESemBeacon', () => {
       object.instanceId = BLEUUID.fromString('1234');
       object.resourceUri = 'http://test.com';
       const serialized = RDFSerializer.serialize(object);
-      console.log(serialized);
+      expect(serialized).to.not.be.undefined;
     });
   });
 

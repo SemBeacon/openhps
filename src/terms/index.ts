@@ -1,1 +1,2 @@
-import * as sembeaconImport from './sembeacon'; export const sembeacon = sembeaconImport;
+import * as sembeaconImport from './sembeacon';
+export const sembeacon = sembeaconImport;

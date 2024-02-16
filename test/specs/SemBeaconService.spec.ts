@@ -26,7 +26,11 @@ describe('SemBeaconService', () => {
                     return service.resolve(beacon, { resolveAll: true });
                 }).then(result => {
                     expect(result.result).to.not.be.undefined;
-                    expect(result.beacons.length).to.eq(10);
+                    expect(result.beacons.length).to.eq(11);
+                    result.beacons.forEach(beacon => {  
+                        expect(beacon).to.not.be.undefined;
+                        expect(beacon.position).to.not.be.undefined;
+                    });
                     done();
                 }).catch(done);
         });
@@ -48,6 +52,21 @@ describe('SemBeaconService', () => {
                     done();
                 }).catch(done);
         });
+
+        it('should resolve a sembeacon', (done) => {
+            BLESemBeaconBuilder.create()
+                .namespaceId(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
+                .instanceId('9c7ce6fc')
+                .calibratedRSSI(-56)
+                .shortResourceUri('https://bit.ly/3JsEnF9')
+                .build().then(beacon => {
+                    return service.insert(beacon.uid, beacon);
+                }).then(insertedObject => {
+                    expect(insertedObject.position).to.not.be.undefined;
+                    done();
+                }).catch(done);
+        });
+
     });
 
     it('should initialize without a service', () => {
