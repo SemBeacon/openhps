@@ -26,7 +26,7 @@ describe('SemBeaconService', () => {
                     return service.resolve(beacon, { resolveAll: true });
                 }).then(result => {
                     expect(result.result).to.not.be.undefined;
-                    expect(result.beacons.length).to.eq(11);
+                    expect(result.beacons.length).to.eq(10);
                     result.beacons.forEach(beacon => {  
                         expect(beacon).to.not.be.undefined;
                         expect(beacon.position).to.not.be.undefined;

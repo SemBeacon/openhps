@@ -197,7 +197,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             driver
                 .queryBindings(query)
                 .then((bindings) => {
-                    const beacons: BLEBeaconObject[] = [beacon];
+                    const beacons: BLEBeaconObject[] = [];
                     bindings.forEach((binding) => {
                         const beaconURI = (binding.get('beacon') as NamedNode).id;
                         const deserializedBeacon: BLEBeaconObject = RDFSerializer.deserializeFromStore(
