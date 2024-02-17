@@ -197,7 +197,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             driver
                 .queryBindings(query)
                 .then((bindings) => {
-                    const beacons: BLEBeaconObject[] = [];
+                    const beacons: BLEBeaconObject[] = [beacon];
                     bindings.forEach((binding) => {
                         const beaconURI = (binding.get('beacon') as NamedNode).id;
                         const deserializedBeacon: BLEBeaconObject = RDFSerializer.deserializeFromStore(
@@ -261,12 +261,13 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                             Accept: 'text/turtle',
                         },
                         withCredentials: false,
+                        timeout: this.options.timeout ?? 5000,
                     },
                 )
                 .then(async (result: AxiosResponse) => {
                     const cacheTimeout = this._parseCacheControl(result);
-                    let resourceUri = result.request.responseURL;
-                    if (result.headers['x-final-url']) {
+                    let resourceUri = result.request.res.responseUrl ?? beacon.resourceUri;
+                    if (result.headers['x-final-url'] !== undefined) {
                         // Permanent URL fix
                         resourceUri = result.headers['x-final-url'];
                     }
@@ -403,6 +404,7 @@ export interface SemBeaconServiceOptions extends DataServiceOptions {
     cors?: boolean;
     accessToken?: string;
     uid?: string;
+    timeout?: number;
 }
 
 export interface ResolveOptions {

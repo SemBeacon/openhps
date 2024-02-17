@@ -10,7 +10,8 @@ describe('SemBeaconService', () => {
 
     before((done) => {
         service = new SemBeaconService(new MemoryDataService(BLESemBeacon), {
-            cors: true
+            cors: false,
+            timeout: 1000
         });
         service.emitAsync('build').then(() => done()).catch(done);
     });
@@ -19,7 +20,7 @@ describe('SemBeaconService', () => {
         it('should resolve all beacons', (done) => {
             BLESemBeaconBuilder.create()
                 .namespaceId(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
-                .instanceId('9c7ce6fc')
+                .instanceId('c187d748')
                 .calibratedRSSI(-56)
                 .shortResourceUri('https://bit.ly/3JsEnF9')
                 .build().then(beacon => {
