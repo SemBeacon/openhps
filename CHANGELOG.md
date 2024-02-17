@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.4 (2024-02-17)
+
+
+### Bug Fixes
+
+* resolve all should not include own beacon ([2eeab27](https://github.com/SemBeacon/openhps/commit/2eeab27fe66a6748cb2c9d212e745c37c81eb4f4))
+
 ### 1.2.3 (2024-02-16)
 
 ### 1.2.2 (2023-12-13)
