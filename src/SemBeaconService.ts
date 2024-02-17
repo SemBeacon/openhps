@@ -267,7 +267,9 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                 .then(async (result: AxiosResponse) => {
                     const cacheTimeout = this._parseCacheControl(result);
                     let resourceUri =
-                        result.request.responseUrl ?? result.request.res.responseUrl ?? beacon.resourceUri;
+                        result.request.responseUrl ??
+                        result.request.responseURL ??
+                        (result.request.res ? result.request.res.responseUrl : beacon.resourceUri);
                     if (result.headers['x-final-url'] !== undefined) {
                         // Permanent URL fix
                         resourceUri = result.headers['x-final-url'];
