@@ -261,12 +261,16 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                             Accept: 'text/turtle',
                         },
                         withCredentials: false,
+                        timeout: this.options.timeout ?? 5000,
                     },
                 )
                 .then(async (result: AxiosResponse) => {
                     const cacheTimeout = this._parseCacheControl(result);
-                    let resourceUri = result.request.responseURL;
-                    if (result.headers['x-final-url']) {
+                    let resourceUri =
+                        result.request.responseUrl ??
+                        result.request.responseURL ??
+                        (result.request.res ? result.request.res.responseUrl : beacon.resourceUri);
+                    if (result.headers['x-final-url'] !== undefined) {
                         // Permanent URL fix
                         resourceUri = result.headers['x-final-url'];
                     }
@@ -403,6 +407,7 @@ export interface SemBeaconServiceOptions extends DataServiceOptions {
     cors?: boolean;
     accessToken?: string;
     uid?: string;
+    timeout?: number;
 }
 
 export interface ResolveOptions {

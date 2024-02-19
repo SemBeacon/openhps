@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.7 (2024-02-17)
+
+
+### Bug Fixes
+
+* response url in browser ([88bf034](https://github.com/SemBeacon/openhps/commit/88bf0348f0da1c8cdae2cf182400dbd5d768df4e))
+
+### 1.2.6 (2024-02-17)
+
+
+### Bug Fixes
+
+* response url in browser ([73affb6](https://github.com/SemBeacon/openhps/commit/73affb64f91f2890ac7100756dc444473255ed98))
+
+### 1.2.5 (2024-02-17)
+
+
+### Bug Fixes
+
+* response url ([43786de](https://github.com/SemBeacon/openhps/commit/43786dec3298834929f846bc57a84ae1b8ea5217))
+
+### 1.2.4 (2024-02-17)
+
+
+### Bug Fixes
+
+* resolve all should not include own beacon ([2eeab27](https://github.com/SemBeacon/openhps/commit/2eeab27fe66a6748cb2c9d212e745c37c81eb4f4))
+
 ### 1.2.3 (2024-02-16)
 
 ### 1.2.2 (2023-12-13)
