@@ -41,6 +41,12 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
         this.once('build', this._onBuild.bind(this));
     }
 
+    private get proxyURL(): IriString {
+        return this.options.cors && typeof this.options.cors === 'string'
+            ? this.options.cors
+            : 'https://proxy.linkeddatafragments.org/';
+    }
+
     private _onBuild(): Promise<void> {
         return new Promise((resolve) => {
             if (this.driver === null) {
@@ -253,17 +259,13 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             }
             this.queue.add(beacon.uid);
             axios
-                .get(
-                    (this.options.cors ? 'https://proxy.linkeddatafragments.org/' : '') +
-                        (beacon.resourceUri ?? beacon.shortResourceUri),
-                    {
-                        headers: {
-                            Accept: 'text/turtle',
-                        },
-                        withCredentials: false,
-                        timeout: this.options.timeout ?? 5000,
+                .get((this.options.cors ? this.proxyURL : '') + (beacon.resourceUri ?? beacon.shortResourceUri), {
+                    headers: {
+                        Accept: 'text/turtle',
                     },
-                )
+                    withCredentials: false,
+                    timeout: this.options.timeout ?? 5000,
+                })
                 .then(async (result: AxiosResponse) => {
                     const cacheTimeout = this._parseCacheControl(result);
                     let resourceUri =
@@ -404,9 +406,18 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
 }
 
 export interface SemBeaconServiceOptions extends DataServiceOptions {
-    cors?: boolean;
+    /**
+     * Enable CORS proxy
+     * @type {boolean} Enable CORS proxy
+     * @type {string} Custom CORS proxy URL
+     */
+    cors?: boolean | IriString;
     accessToken?: string;
     uid?: string;
+    /**
+     * Timeout for fetching SemBeacon data
+     * @default 5000
+     */
     timeout?: number;
 }
 

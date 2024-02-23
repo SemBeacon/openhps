@@ -20,7 +20,7 @@ describe('SemBeaconService', () => {
         it('should resolve a sembeacon and all related beacons', (done) => {
             BLESemBeaconBuilder.create()
                 .namespaceId(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
-                .instanceId('9c7ce6fc')
+                .instanceId('c187d748')
                 .calibratedRSSI(-56)
                 .shortResourceUri('https://bit.ly/3JsEnF9')
                 .build().then(beacon => {
@@ -59,7 +59,7 @@ describe('SemBeaconService', () => {
         it('should return serializable quads', (done) => {
             BLESemBeaconBuilder.create()
                 .namespaceId(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
-                .instanceId('9c7ce6fc')
+                .instanceId('c187d748')
                 .calibratedRSSI(-56)
                 .shortResourceUri('https://bit.ly/3JsEnF9')
                 .build().then(beacon => {
