@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.8 (2024-02-23)
+
+
+### Bug Fixes
+
+* custom cors ([766ef75](https://github.com/SemBeacon/openhps/commit/766ef759302076e3c3b1d20917b10e4628bc6d4d))
+
 ### 1.2.7 (2024-02-17)
 
 
