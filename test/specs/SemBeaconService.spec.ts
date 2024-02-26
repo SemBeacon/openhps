@@ -10,8 +10,8 @@ describe('SemBeaconService', () => {
 
     before((done) => {
         service = new SemBeaconService(new MemoryDataService(BLESemBeacon), {
-            cors: false,
-            timeout: 1000
+            cors: 'https://proxy.sembeacon.org/?api=xWzD9b4eRBdWz&uri=',
+            timeout: 15000
         });
         service.emitAsync('build').then(() => done()).catch(done);
     });

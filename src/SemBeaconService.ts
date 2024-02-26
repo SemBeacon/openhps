@@ -143,6 +143,18 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                     resolveAll: true,
                 })
                     .then((beacons) => {
+                        if (!beacons.result) {
+                            reject(
+                                new Error(
+                                    `Unable to resolve SemBeacon data! 
+                                    ns=${object.namespaceId.toString()}, 
+                                    id=${object.instanceId.toString()}, 
+                                    uri=${object.resourceUri}, 
+                                    shortURI=${object.shortResourceUri}`,
+                                ),
+                            );
+                            return;
+                        }
                         beacons.result.resourceData = new Store(beacons.data);
                         if (beacons.beacons) {
                             return Promise.all(
