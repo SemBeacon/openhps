@@ -148,7 +148,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                                 new Error(
                                     `Unable to resolve SemBeacon data! 
                                     ns=${object.namespaceId.toString()}, 
-                                    id=${object.instanceId.toString()}, 
+                                    id=${object.instanceId.toString(4, false)}, 
                                     uri=${object.resourceUri}, 
                                     shortURI=${object.shortResourceUri}`,
                                 ),
@@ -169,6 +169,9 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         }
                     })
                     .then((beacon) => {
+                        if (!beacon) {
+                            return;
+                        }
                         this.emitAsync('beacon', beacon);
                         return super.insert(uid, beacon);
                     })
@@ -273,7 +276,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             axios
                 .get((this.options.cors ? this.proxyURL : '') + (beacon.resourceUri ?? beacon.shortResourceUri), {
                     headers: {
-                        Accept: 'text/turtle',
+                        Accept: 'text/turtle;q=1.0;application/rdf+xml;q=0.9',
                     },
                     withCredentials: false,
                     timeout: this.options.timeout ?? 5000,
@@ -288,15 +291,22 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         // Permanent URL fix
                         resourceUri = result.headers['x-final-url'];
                     }
+                    this.logger('debug', `Fetched SemBeacon data from ${resourceUri}`);
                     let deserialized: BLESemBeacon;
                     try {
                         deserialized = RDFSerializer.deserializeFromString(resourceUri, result.data);
                     } catch (ex) {
                         // Unable to deserialize
+                        this.logger(
+                            'error',
+                            `Unable to deserialize SemBeacon data from ${resourceUri}: ${ex.message}`,
+                            result.data,
+                        );
                         resolve({ beacon, store: undefined });
                         return;
                     }
                     if (deserialized === undefined) {
+                        this.logger('error', `Unable to deserialize SemBeacon data from ${resourceUri}!`, result.data);
                         resolve({ beacon, store: undefined });
                         return;
                     }
@@ -322,7 +332,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                             engine: DefaultEngine,
                         });
                         const namespaceIdSantized = beacon.namespaceId.toString().replaceAll('-', '');
-                        const instanceIdSanitzed = beacon.instanceId.toString().replaceAll('-', '');
+                        const instanceIdSanitized = beacon.instanceId.toString(4, false).replaceAll('-', '');
                         const query = `
                         PREFIX sembeacon: <http://purl.org/sembeacon/>
                         SELECT ?beacon {
@@ -334,7 +344,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                                 ?beacon sembeacon:namespace ?namespace .
                                 ?namespace sembeacon:namespaceId "${namespaceIdSantized}"^^xsd:hexBinary .
                             } .
-                            ?beacon sembeacon:instanceId "${instanceIdSanitzed}"^^xsd:hexBinary .
+                            ?beacon sembeacon:instanceId "${instanceIdSanitized}"^^xsd:hexBinary .
                         }`;
                         const bindings = await driver.queryBindings(query);
                         if (bindings.length > 0) {
@@ -344,6 +354,11 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                             beacon = this._mergeBeacon(beacon, deserialized) as BLESemBeacon;
                             beacon.maxAge = cacheTimeout;
                             beacon.modifiedTimestamp = TimeService.now();
+                        } else if (bindings.length === 0) {
+                            this.logger(
+                                'warn',
+                                `Unable to find SemBeacon with namespaceId=${namespaceIdSantized} and instanceId=${instanceIdSanitized} in URI ${beacon.resourceUri}!`,
+                            );
                         }
                         return Promise.resolve({ store, beacon });
                     }
