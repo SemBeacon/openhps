@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.11 (2024-04-06)
+
+
+### Bug Fixes
+
+* exclude crypto from webpack ([2e475c0](https://github.com/SemBeacon/openhps/commit/2e475c0d39a43d54bcc8cd98d2d1c4671f2feb95))
+
 ### 1.2.10 (2024-02-27)
 
 ### 1.2.9 (2024-02-26)
