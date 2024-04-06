@@ -13,6 +13,7 @@ const defaultConfig = env => ({
       typescript: false,
     },
     fallback: {
+      crypto: false,
       path: false,
       fs: false,
       os: false,
