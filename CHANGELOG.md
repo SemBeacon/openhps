@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.12 (2024-04-06)
+
+
+### Bug Fixes
+
+* sembeacon deserialization of other objects ([029662b](https://github.com/SemBeacon/openhps/commit/029662baae43a4d051b0a66552f2bba1f4e2f3ca))
+
 ### 1.2.11 (2024-04-06)
 
 
