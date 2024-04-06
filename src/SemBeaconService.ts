@@ -36,7 +36,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
      */
     constructor(driver?: DataServiceDriver<string, BLEBeaconObject>, options?: SemBeaconServiceOptions) {
         super(driver);
-        this.options = options ?? { cors: true, accessToken: undefined };
+        this.options = options ?? { cors: true };
         this.uid = options.uid ?? this.uid;
         this.once('build', this._onBuild.bind(this));
     }
@@ -245,7 +245,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
 
     protected shortenURL(beacon: BLESemBeacon): Promise<BLESemBeacon> {
         return new Promise((resolve, reject) => {
-            if (!this.options || !this.options.accessToken) {
+            if (!this.options.bitly) {
                 resolve(beacon);
                 return;
             }
@@ -254,13 +254,13 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                 .post(
                     'https://api-ssl.bitly.com/v4/shorten',
                     {
-                        group_guid: '4eb083935b1',
+                        group_guid: this.options.bitly.groupGuid,
                         domain: 'bit.ly',
                         long_url: beacon.resourceUri,
                     },
                     {
                         headers: {
-                            Authorization: `Bearer ${this.options.accessToken}`,
+                            Authorization: `Bearer ${this.options.bitly.accessToken}`,
                         },
                     },
                 )
@@ -466,7 +466,10 @@ export interface SemBeaconServiceOptions extends DataServiceOptions {
      * @type {string} Custom CORS proxy URL
      */
     cors?: boolean | IriString;
-    accessToken?: string;
+    bitly?: {
+        accessToken: string;
+        groupGuid: string;
+    };
     uid?: string;
     /**
      * Timeout for fetching SemBeacon data

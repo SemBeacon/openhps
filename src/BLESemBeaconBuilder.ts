@@ -185,7 +185,7 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
                 .post(
                     'https://api-ssl.bitly.com/v4/shorten',
                     {
-                        group_guid: '4eb083935b1',
+                        group_guid: this.options.bitly.groupGuid,
                         domain: 'bit.ly',
                         long_url: beacon.resourceUri,
                     },
@@ -209,5 +209,6 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
 export interface SemBeaconBuilderOptions {
     bitly?: {
         accessToken: string;
+        groupGuid: string;
     };
 }

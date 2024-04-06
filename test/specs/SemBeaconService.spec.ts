@@ -10,6 +10,10 @@ describe('SemBeaconService', () => {
 
     before((done) => {
         service = new SemBeaconService(new MemoryDataService(BLESemBeacon), {
+            bitly: {
+                accessToken: '5acd0aa037c74dd34287db2e914246603d97c84a',
+                groupGuid: "Bo46fA1eqqx"
+            },
             cors: 'https://proxy.sembeacon.org/?api=xWzD9b4eRBdWz&uri=',
             timeout: 15000
         });
