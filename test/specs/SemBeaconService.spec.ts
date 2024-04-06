@@ -32,6 +32,19 @@ describe('SemBeaconService', () => {
                     done();
                 }).catch(done);
         });
+
+        it('should resolve a sembeacon profile', (done) => {
+            BLESemBeaconBuilder.create()
+                .instanceId('c187d748')
+                .calibratedRSSI(-56)
+                .resourceUri('https://solid.maximvdw.be/profile/card#me')
+                .build().then(beacon => {
+                    return service.insert(beacon.uid, beacon);
+                }).then((insertedObject: BLESemBeacon) => {
+                    expect(insertedObject.object).to.not.be.undefined;
+                    done();
+                }).catch(done);
+        });
     });
 
     describe('resolve()', () => {

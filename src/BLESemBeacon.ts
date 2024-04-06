@@ -43,6 +43,9 @@ export class BLESemBeacon extends BLEBeaconObject {
     @SerializableMember()
     flags: number;
 
+    @SerializableMember()
+    object?: any;
+
     @SerializableMember({
         rdf: {
             predicate: sembeacon.namespaceId,

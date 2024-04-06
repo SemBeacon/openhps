@@ -1,7 +1,8 @@
 import { BLEBeaconBuilder, BLEService, BLEUUID } from '@openhps/rf';
 import { BLESemBeacon } from './BLESemBeacon';
-import { IriString } from '@openhps/rdf';
+import { IriString, UrlString } from '@openhps/rdf';
 import { BufferUtils, LengthUnit, UUID } from '@openhps/core';
+import axios from 'axios';
 
 // Only execute when running in Nodejs
 let crypto: Crypto = undefined;
@@ -134,6 +135,11 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
             this.beacon.namespaceId = BLEUUID.fromString(UUID.generate().toString());
         }
 
+        // Shorten the URI if not already shortened
+        if (!this.beacon.shortResourceUri) {
+            this.beacon = await this.shortenURL(this.beacon);
+        }
+
         // Compute manufacturer data
         const manufacturerData = new DataView(new ArrayBuffer(24), 0);
         // Advertisement data
@@ -166,6 +172,37 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
         this.beacon.addService(new BLEService(BLEUUID.fromString('FEAA'), new Uint8Array(serviceData.buffer)));
         this.beacon.uid = this.beacon.computeUID();
         return this.beacon;
+    }
+
+    protected shortenURL(beacon: BLESemBeacon): Promise<BLESemBeacon> {
+        return new Promise((resolve, reject) => {
+            if (!this.options.bitly || !this.options.bitly.accessToken) {
+                resolve(beacon);
+                return;
+            }
+
+            axios
+                .post(
+                    'https://api-ssl.bitly.com/v4/shorten',
+                    {
+                        group_guid: '4eb083935b1',
+                        domain: 'bit.ly',
+                        long_url: beacon.resourceUri,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.options.bitly.accessToken}`,
+                        },
+                    },
+                )
+                .then((response) => {
+                    beacon.shortResourceUri = response.data.link as UrlString;
+                    resolve(beacon);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
     }
 }
 
