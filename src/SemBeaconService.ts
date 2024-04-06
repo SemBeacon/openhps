@@ -290,7 +290,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             axios
                 .get(this.normalizeURI(beacon), {
                     headers: {
-                        Accept: 'text/turtle;q=1.0;application/rdf+xml;q=0.9',
+                        Accept: 'text/turtle;q=1.0,application/rdf+xml;q=0.9',
                     },
                     withCredentials: false,
                     timeout: this.options.timeout ?? 5000,
