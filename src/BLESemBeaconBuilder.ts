@@ -3,6 +3,14 @@ import { BLESemBeacon } from './BLESemBeacon';
 import { IriString } from '@openhps/rdf';
 import { BufferUtils, LengthUnit, UUID } from '@openhps/core';
 
+// Only execute when running in Nodejs
+let crypto: Crypto = undefined;
+if (typeof window === 'undefined') {
+    crypto = require('crypto').webcrypto; // eslint-disable-line
+} else {
+    crypto = window.crypto;
+}
+
 /**
  * BLE SemBeacon builder
  */
@@ -15,7 +23,7 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
         this.options = options ?? {};
         this.beacon = new BLESemBeacon();
         this.beacon.shortResourceUri = '' as any;
-        this.beacon.namespaceId = BLEUUID.fromString(UUID.generate().toString());
+        this.beacon.namespaceId = undefined;
         this.beacon.instanceId = BLEUUID.fromString(
             UUID.generate()
                 .toString()
@@ -113,41 +121,51 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
         return { url: view, length: index };
     }
 
-    build(): Promise<BLESemBeacon> {
-        return new Promise((resolve) => {
-            // Compute manufacturer data
-            const manufacturerData = new DataView(new ArrayBuffer(24), 0);
-            // Advertisement data
-            manufacturerData.setUint8(0, 0xbe); // Beacon code
-            manufacturerData.setUint8(1, 0xac);
-            // Namespace ID
-            const namespaceId = new DataView(this.beacon.namespaceId.toBuffer().buffer, 0);
-            for (let i = 2; i < 2 + 16; i++) {
-                manufacturerData.setUint8(i, namespaceId.getUint8(i - 2));
-            }
-            // Instance ID
-            const instanceId = new DataView(this.beacon.instanceId.toBuffer().buffer, 0);
-            for (let i = 18; i < 18 + 4; i++) {
-                manufacturerData.setUint8(i, instanceId.getUint8(i - 18));
-            }
-            manufacturerData.setInt8(22, this.beacon.calibratedRSSI); // Calibrated RSSI
-            manufacturerData.setUint8(23, this.beacon.flags); // SemBeacon flags
+    async build(): Promise<BLESemBeacon> {
+        if (this.beacon.namespaceId === undefined && this.beacon.resourceUri) {
+            // Create a 128 bit hex string from the URI
+            const encoder = new TextEncoder();
+            const data = encoder.encode(this.beacon.resourceUri);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map((byte) => byte.toString(16).padStart(2, '0')).join('');
+            this.beacon.namespaceId = BLEUUID.fromString(hashHex);
+        } else if (this.beacon.namespaceId === undefined) {
+            this.beacon.namespaceId = BLEUUID.fromString(UUID.generate().toString());
+        }
 
-            // Eddystone Service
-            const { url, length } = this.getEncodedURL();
-            const serviceData = new DataView(new ArrayBuffer(19 - (17 - length)), 0);
-            serviceData.setUint8(0, 0x10); // Eddystone-URL frame
-            serviceData.setInt8(1, this.beacon.getCalibratedRSSI(0, LengthUnit.METER));
-            // Encoded URL
-            for (let i = 0; i < length; i++) {
-                serviceData.setUint8(2 + i, url.getUint8(i));
-            }
+        // Compute manufacturer data
+        const manufacturerData = new DataView(new ArrayBuffer(24), 0);
+        // Advertisement data
+        manufacturerData.setUint8(0, 0xbe); // Beacon code
+        manufacturerData.setUint8(1, 0xac);
+        // Namespace ID
+        const namespaceId = new DataView(this.beacon.namespaceId.toBuffer().buffer, 0);
+        for (let i = 2; i < 2 + 16; i++) {
+            manufacturerData.setUint8(i, namespaceId.getUint8(i - 2));
+        }
+        // Instance ID
+        const instanceId = new DataView(this.beacon.instanceId.toBuffer().buffer, 0);
+        for (let i = 18; i < 18 + 4; i++) {
+            manufacturerData.setUint8(i, instanceId.getUint8(i - 18));
+        }
+        manufacturerData.setInt8(22, this.beacon.calibratedRSSI); // Calibrated RSSI
+        manufacturerData.setUint8(23, this.beacon.flags); // SemBeacon flags
 
-            this.beacon.manufacturerData.set(this.manufacturer, new Uint8Array(manufacturerData.buffer));
-            this.beacon.addService(new BLEService(BLEUUID.fromString('FEAA'), new Uint8Array(serviceData.buffer)));
-            this.beacon.uid = this.beacon.computeUID();
-            resolve(this.beacon);
-        });
+        // Eddystone Service
+        const { url, length } = this.getEncodedURL();
+        const serviceData = new DataView(new ArrayBuffer(19 - (17 - length)), 0);
+        serviceData.setUint8(0, 0x10); // Eddystone-URL frame
+        serviceData.setInt8(1, this.beacon.getCalibratedRSSI(0, LengthUnit.METER));
+        // Encoded URL
+        for (let i = 0; i < length; i++) {
+            serviceData.setUint8(2 + i, url.getUint8(i));
+        }
+
+        this.beacon.manufacturerData.set(this.manufacturer, new Uint8Array(manufacturerData.buffer));
+        this.beacon.addService(new BLEService(BLEUUID.fromString('FEAA'), new Uint8Array(serviceData.buffer)));
+        this.beacon.uid = this.beacon.computeUID();
+        return this.beacon;
     }
 }
 
