@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.15 (2024-04-08)
+
+
+### Bug Fixes
+
+* application/rdf+xml parsing ([e610630](https://github.com/SemBeacon/openhps/commit/e610630b287ab5f0ef187172927988bf0404bb4b))
+
 ### 1.2.14 (2024-04-06)
 
 ### 1.2.13 (2024-04-06)

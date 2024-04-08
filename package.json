@@ -1,6 +1,6 @@
 {
   "name": "@sembeacon/openhps",
-  "version": "1.2.14",
+  "version": "1.2.15",
   "description": "SemBeacon module for OpenHPS",
   "author": "Maxim Van de Wynckel",
   "license": "Apache-2.0",
