@@ -45,7 +45,7 @@ export class BLESemBeacon extends BLEBeaconObject {
 
     @SerializableMember({
         rdf: {
-            predicate: [rdfs.seeAlso, rdfs.isDefinedBy],
+            predicate: [rdfs.seeAlso],
         },
     })
     object?: any;
