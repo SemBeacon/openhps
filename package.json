@@ -58,7 +58,7 @@
   ],
   "peerDependencies": {
     "@openhps/core": ">=0.6.9",
-    "@openhps/rdf": ">=0.4.46",
+    "@openhps/rdf": ">=0.4.60",
     "@openhps/rf": ">=0.1.61",
     "reflect-metadata": ">=0.2.1"
   },
@@ -66,7 +66,7 @@
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
     "@openhps/core": ">=0.6.9",
-    "@openhps/rdf": "^0.4.53",
+    "@openhps/rdf": "^0.4.60",
     "@openhps/rf": "^0.1.61",
     "@types/chai": "^4.3.14",
     "@types/mocha": "^10.0.6",

@@ -290,7 +290,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             axios
                 .get(this.normalizeURI(beacon), {
                     headers: {
-                        Accept: 'text/turtle;q=1.0,application/rdf+xml;q=0.9',
+                        Accept: 'text/turtle;q=1.0,text/n3;q=0.9,application/rdf+xml;q=0.8',
                     },
                     withCredentials: false,
                     timeout: this.options.timeout ?? 5000,
@@ -308,7 +308,11 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                     this.logger('debug', `Fetched SemBeacon data from ${resourceUri}`);
                     let deserialized: any;
                     try {
-                        deserialized = RDFSerializer.deserializeFromString(resourceUri, result.data);
+                        deserialized = RDFSerializer.deserializeFromString(
+                            resourceUri,
+                            result.data,
+                            result.headers['content-type'],
+                        );
                     } catch (ex) {
                         // Unable to deserialize
                         this.logger(
