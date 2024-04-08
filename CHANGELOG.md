@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.4.0 (2024-04-08)
+
+
+### Features
+
+* object as rdfs:seeAlso ([667f861](https://github.com/SemBeacon/openhps/commit/667f861f4cbd28ce86f0dd86709147735378715c))
+
 ## 1.3.0 (2024-04-08)
 
 
