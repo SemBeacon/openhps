@@ -49,6 +49,19 @@ describe('SemBeaconService', () => {
                     done();
                 }).catch(done);
         });
+
+        it('should resolve a sembeacon profile as rdf+xml', (done) => {
+            BLESemBeaconBuilder.create()
+                .instanceId('c187d748')
+                .calibratedRSSI(-56)
+                .resourceUri('https://beatsigner.com/foaf.rdf#me')
+                .build().then(beacon => {
+                    return service.insert(beacon.uid, beacon);
+                }).then((insertedObject: BLESemBeacon) => {
+                    expect(insertedObject.object).to.not.be.undefined;
+                    done();
+                }).catch(done);
+        });
     });
 
     describe('resolve()', () => {

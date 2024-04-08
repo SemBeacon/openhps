@@ -14,6 +14,7 @@ import {
 } from '@openhps/rdf';
 import { BLEBeaconObject } from '@openhps/rf';
 import axios, { AxiosResponse } from 'axios';
+import { RdfXmlParser } from 'rdfxml-streaming-parser';
 
 export interface ResolveResult {
     result: BLESemBeacon;
@@ -305,14 +306,13 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         // Permanent URL fix
                         resourceUri = result.headers['x-final-url'];
                     }
+
+                    const contentType = result.headers['content-type'] ?? 'text/turtle';
+
                     this.logger('debug', `Fetched SemBeacon data from ${resourceUri}`);
                     let deserialized: any;
                     try {
-                        deserialized = RDFSerializer.deserializeFromString(
-                            resourceUri,
-                            result.data,
-                            result.headers['content-type'],
-                        );
+                        deserialized = RDFSerializer.deserializeFromString(resourceUri, result.data, contentType);
                     } catch (ex) {
                         // Unable to deserialize
                         this.logger(
@@ -329,8 +329,26 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         return;
                     }
 
-                    const parser = new Parser();
-                    const quads: Quad[] = parser.parse(result.data);
+                    let quads: Quad[] = [];
+                    if (contentType.includes('application/rdf+xml') || result.data.startsWith('<?xml version=')) {
+                        const parser = new RdfXmlParser({
+                            baseIRI: resourceUri,
+                        });
+                        parser.on('data', (data: Quad) => {
+                            quads.push(data);
+                        });
+                        parser.on('error', (err) => {
+                            throw new Error('An error occured during RDF parsing: ' + err);
+                        });
+                        parser.write(result.data);
+                        parser.end();
+                    } else {
+                        const mimetype = contentType.substring(0, contentType.indexOf(';'));
+                        const parser = new Parser({
+                            format: mimetype,
+                        });
+                        quads = parser.parse(result.data);
+                    }
                     const store = new Store(quads);
 
                     // Check if the deserialized object is a sembeacon
