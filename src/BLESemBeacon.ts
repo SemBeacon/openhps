@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { NumberType, SerializableMember, SerializableObject } from '@openhps/core';
-import { DataFactory, IriString, Store, Thing, UrlString, xsd } from '@openhps/rdf';
+import { DataFactory, IriString, Store, Thing, UrlString, rdfs, xsd } from '@openhps/rdf';
 import { BLEBeaconObject, BLEEddystoneURL, BLEService, BLEUUID, BufferUtils } from '@openhps/rf';
 import { sembeacon } from './terms';
 
@@ -43,7 +43,11 @@ export class BLESemBeacon extends BLEBeaconObject {
     @SerializableMember()
     flags: number;
 
-    @SerializableMember()
+    @SerializableMember({
+        rdf: {
+            predicate: [rdfs.seeAlso, rdfs.isDefinedBy],
+        },
+    })
     object?: any;
 
     @SerializableMember({
