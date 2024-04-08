@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.3.0 (2024-04-08)
+
+
+### Features
+
+* rdf xml support fix ([fe61852](https://github.com/SemBeacon/openhps/commit/fe61852a5f1c6218764d0bd87bfed4e1a992156b))
+
 ### 1.2.15 (2024-04-08)
 
 
