@@ -80,7 +80,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     resolve(
         object: BLESemBeacon,
         options: ResolveOptions = {
-            persistence: true,
+            persistence: false,
             resolveAll: false,
         },
         existingObject?: BLESemBeacon,
@@ -142,15 +142,27 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                 // Get the existing SemBeacon if found
                 // To retrieve caching information
                 this._findByUID(uid)
-                    .then((existingObject) => {
-                        return this.resolve(
-                            object,
-                            {
-                                resolveAll: true,
-                                persistence: false,
-                            },
-                            existingObject as BLESemBeacon,
-                        );
+                    .then((existingObject: BLESemBeacon) => {
+                        // Before resolving the SemBeacon, check the cache
+                        if (
+                            !existingObject ||
+                            TimeService.now() - existingObject.maxAge > existingObject.modifiedTimestamp
+                        ) {
+                            return this.resolve(
+                                object,
+                                {
+                                    resolveAll: true,
+                                    persistence: false,
+                                },
+                                existingObject as BLESemBeacon,
+                            );
+                        } else {
+                            return Promise.resolve({
+                                result: existingObject,
+                                beacons: [],
+                                data: undefined,
+                            } as ResolveResult);
+                        }
                     })
                     .then((beacons) => {
                         if (!beacons.result) {
