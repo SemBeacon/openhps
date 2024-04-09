@@ -10,7 +10,6 @@ import {
     RDFSerializer,
     SPARQLDataDriver,
     Store,
-    UrlString,
 } from '@openhps/rdf';
 import { BLEBeaconObject } from '@openhps/rf';
 import axios, { AxiosResponse } from 'axios';
@@ -43,9 +42,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     }
 
     private get proxyURL(): IriString {
-        return this.options.cors && typeof this.options.cors === 'string'
-            ? this.options.cors
-            : 'https://proxy.linkeddatafragments.org/';
+        return this.options.cors && typeof this.options.cors === 'string' ? this.options.cors : undefined;
     }
 
     private _onBuild(): Promise<void> {
@@ -246,27 +243,13 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
 
     protected shortenURL(beacon: BLESemBeacon): Promise<BLESemBeacon> {
         return new Promise((resolve, reject) => {
-            if (!this.options.bitly) {
-                resolve(beacon);
-                return;
+            if (!this.options.urlShortener) {
+                return resolve(beacon);
             }
-
-            axios
-                .post(
-                    'https://api-ssl.bitly.com/v4/shorten',
-                    {
-                        group_guid: this.options.bitly.groupGuid,
-                        domain: 'bit.ly',
-                        long_url: beacon.resourceUri,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.options.bitly.accessToken}`,
-                        },
-                    },
-                )
-                .then((response) => {
-                    beacon.shortResourceUri = response.data.link as UrlString;
+            this.options
+                .urlShortener(beacon.resourceUri)
+                .then((shortened) => {
+                    beacon.shortResourceUri = shortened as IriString;
                     resolve(beacon);
                 })
                 .catch(reject);
@@ -488,10 +471,10 @@ export interface SemBeaconServiceOptions extends DataServiceOptions {
      * @type {string} Custom CORS proxy URL
      */
     cors?: boolean | IriString;
-    bitly?: {
-        accessToken: string;
-        groupGuid: string;
-    };
+    /**
+     * URL shortener callback
+     */
+    urlShortener?: (url: string) => Promise<string>;
     uid?: string;
     /**
      * Timeout for fetching SemBeacon data

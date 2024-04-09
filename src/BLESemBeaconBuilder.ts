@@ -1,8 +1,7 @@
 import { BLEBeaconBuilder, BLEService, BLEUUID } from '@openhps/rf';
 import { BLESemBeacon } from './BLESemBeacon';
-import { IriString, UrlString } from '@openhps/rdf';
+import { IriString } from '@openhps/rdf';
 import { BufferUtils, LengthUnit, UUID } from '@openhps/core';
-import axios from 'axios';
 
 // Only execute when running in Nodejs
 let crypto: Crypto = undefined;
@@ -176,39 +175,23 @@ export class BLESemBeaconBuilder extends BLEBeaconBuilder<BLESemBeacon> {
 
     protected shortenURL(beacon: BLESemBeacon): Promise<BLESemBeacon> {
         return new Promise((resolve, reject) => {
-            if (!this.options.bitly || !this.options.bitly.accessToken) {
-                resolve(beacon);
-                return;
+            if (!this.options.urlShortener) {
+                return resolve(beacon);
             }
-
-            axios
-                .post(
-                    'https://api-ssl.bitly.com/v4/shorten',
-                    {
-                        group_guid: this.options.bitly.groupGuid,
-                        domain: 'bit.ly',
-                        long_url: beacon.resourceUri,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.options.bitly.accessToken}`,
-                        },
-                    },
-                )
-                .then((response) => {
-                    beacon.shortResourceUri = response.data.link as UrlString;
+            this.options
+                .urlShortener(beacon.resourceUri)
+                .then((shortened) => {
+                    beacon.shortResourceUri = shortened as IriString;
                     resolve(beacon);
                 })
-                .catch((error) => {
-                    reject(error);
-                });
+                .catch(reject);
         });
     }
 }
 
 export interface SemBeaconBuilderOptions {
-    bitly?: {
-        accessToken: string;
-        groupGuid: string;
-    };
+    /**
+     * URL shortener callback
+     */
+    urlShortener?: (url: string) => Promise<string>;
 }
