@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.4.1 (2024-04-09)
+
+
+### Bug Fixes
+
+* shortener callback ([8800eec](https://github.com/SemBeacon/openhps/commit/8800eec8f5cd1558f9577a4744995c7c08876d06))
+
 ## 1.4.0 (2024-04-08)
 
 
