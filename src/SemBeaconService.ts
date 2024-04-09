@@ -89,7 +89,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
             let resourceData: Store = undefined;
             Promise.all([
                 !object.shortResourceUri && object.resourceUri ? this.shortenURL(object) : Promise.resolve(object),
-                (options.persistence && existingObject === undefined)
+                options.persistence && existingObject === undefined
                     ? (this._findByUID(object.uid) as Promise<BLESemBeacon>)
                     : Promise.resolve(existingObject),
             ])
