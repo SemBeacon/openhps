@@ -74,22 +74,24 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
      * Resolve SemBeacon information
      * @param {BLESemBeacon} object SemBeacon object
      * @param {ResolveOptions} [options] Resolve options
+     * @param {BLESemBeacon} [existingObject] Existing SemBeacon object
      * @returns {Promise<BLESemBeacon>} Promise of resolved SemBeacon
      */
     resolve(
         object: BLESemBeacon,
         options: ResolveOptions = {
-            persistance: true,
+            persistence: true,
             resolveAll: false,
         },
+        existingObject?: BLESemBeacon,
     ): Promise<ResolveResult> {
         return new Promise((resolve, reject) => {
             let resourceData: Store = undefined;
             Promise.all([
                 !object.shortResourceUri && object.resourceUri ? this.shortenURL(object) : Promise.resolve(object),
-                options.persistance
+                (options.persistence && existingObject === undefined)
                     ? (this._findByUID(object.uid) as Promise<BLESemBeacon>)
-                    : Promise.resolve(undefined),
+                    : Promise.resolve(existingObject),
             ])
                 .then((objects: BLESemBeacon[]) => {
                     if (
@@ -137,18 +139,28 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     insert(uid: string, object: BLEBeaconObject): Promise<BLEBeaconObject> {
         return new Promise((resolve, reject) => {
             if (object instanceof BLESemBeacon) {
-                this.resolve(object, {
-                    resolveAll: true,
-                })
+                // Get the existing SemBeacon if found
+                // To retrieve caching information
+                this._findByUID(uid)
+                    .then((existingObject) => {
+                        return this.resolve(
+                            object,
+                            {
+                                resolveAll: true,
+                                persistence: false,
+                            },
+                            existingObject as BLESemBeacon,
+                        );
+                    })
                     .then((beacons) => {
                         if (!beacons.result) {
                             reject(
                                 new Error(
                                     `Unable to resolve SemBeacon data! 
-                                    ns=${object.namespaceId.toString()}, 
-                                    id=${object.instanceId.toString(4, false)}, 
-                                    uri=${object.resourceUri}, 
-                                    shortURI=${object.shortResourceUri}`,
+                                ns=${object.namespaceId.toString()}, 
+                                id=${object.instanceId.toString(4, false)}, 
+                                uri=${object.resourceUri}, 
+                                shortURI=${object.shortResourceUri}`,
                                 ),
                             );
                             return;
@@ -431,7 +443,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     }
 
     private _parseCacheControl(response: AxiosResponse): number {
-        const header = response.headers['Cache-Control'];
+        const header = response.headers['Cache-Control'] ?? response.headers['cache-control'];
         if (!header) {
             return 30000; // Default cache timeout
         }
@@ -460,11 +472,19 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                     break;
             }
         }
-        return timeout;
+        if (this.options.minTimeout) {
+            return Math.max(timeout, this.options.minTimeout);
+        } else {
+            return timeout;
+        }
     }
 }
 
 export interface SemBeaconServiceOptions extends DataServiceOptions {
+    /**
+     * Minimum cache timeout in milliseconds
+     */
+    minTimeout?: number;
     /**
      * Enable CORS proxy
      * @type {boolean} Enable CORS proxy
@@ -485,5 +505,5 @@ export interface SemBeaconServiceOptions extends DataServiceOptions {
 
 export interface ResolveOptions {
     resolveAll?: boolean;
-    persistance?: boolean;
+    persistence?: boolean;
 }
