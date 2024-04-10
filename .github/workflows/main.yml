@@ -133,7 +133,7 @@ jobs:
           path: |
             docs/out/*
       - name: Deploy site to GitHub
-        if: github.ref == 'refs/heads/master' && success()
+        if: github.ref == 'refs/heads/main' && success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
