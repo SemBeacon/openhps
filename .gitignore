@@ -1,7 +1,0 @@
-node_modules/
-dist/
-docs/out/
-coverage/
-artifacts/
-test-results.xml
-.nyc_output/
