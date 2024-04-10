@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.5.0 (2024-04-10)
+
+
+### Features
+
+* helper method to change manufacturer id ([3a5f019](https://github.com/SemBeacon/openhps/commit/3a5f019578047eee71aa35c3cef9bd984e0b6b36))
+
 ### 1.4.3 (2024-04-09)
 
 ### 1.4.2 (2024-04-09)
