@@ -23,6 +23,16 @@ describe('BLESemBeacon', () => {
       beacon.parseAdvertisement(payload);
       expect(beacon.isValid()).to.be.true;
     });
+
+    it('should support modifying the manufacturer id', () => {
+      const beacon = new BLESemBeacon();
+      beacon.parseAdvertisement(payload);
+      expect(beacon.isValid()).to.be.true;
+      beacon.manufacturerId = 0x1234;
+      expect(beacon.manufacturerId).to.equal(0x1234);
+      expect(beacon.isValid()).to.be.true;
+    });
+
   });
 
   describe('serialization', () => {
