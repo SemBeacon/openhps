@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.6.0 (2024-04-21)
+
+
+### Features
+
+* custom fetch override ([2121eae](https://github.com/SemBeacon/openhps/commit/2121eaebc85109931330c148e391a026b9641406))
+
 ### 1.5.1 (2024-04-10)
 
 ## 1.5.0 (2024-04-10)
