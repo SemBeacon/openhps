@@ -100,6 +100,34 @@ describe('SemBeaconService', () => {
                 }).catch(done);
         });
 
+        it('should resolve using a custom fetch', (done) => {
+            BLESemBeaconBuilder.create()
+                .namespaceId(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
+                .instanceId('c187d748')
+                .calibratedRSSI(-56)
+                .shortResourceUri('https://bit.ly/3JsEnF9')
+                .build().then(beacon => {
+                    return service.resolve(beacon, { 
+                        resolveAll: true,
+                        fetch: (url: string, init: RequestInit) => {
+                            console.log('Custom fetch', url);
+                            return fetch(url, {
+                                headers: {
+                                    'User-Agent': 'SemBeacon Test'
+                                },
+                                ...init
+                            });
+                        }
+                    });
+                }).then(result => {
+                    const serialized = DataSerializer.serialize(result);
+                    const deserialized: ResolveResult = DataSerializer.deserialize(serialized);
+                    expect(deserialized.data).to.not.be.undefined;
+                    const store = new Store(deserialized.data);
+                    expect(store.size).to.be.greaterThan(10);
+                    done();
+                }).catch(done);
+        });
     });
 
     it('should initialize without a service', () => {

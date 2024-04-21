@@ -12,7 +12,7 @@ import {
     Store,
 } from '@openhps/rdf';
 import { BLEBeaconObject } from '@openhps/rf';
-import axios, { AxiosResponse } from 'axios';
+import fetch, { Headers } from 'cross-fetch';
 import { RdfXmlParser } from 'rdfxml-streaming-parser';
 
 export interface ResolveResult {
@@ -39,6 +39,14 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
         this.options = options ?? { cors: true };
         this.uid = options.uid ?? this.uid;
         this.once('build', this._onBuild.bind(this));
+    }
+
+    get fetch(): typeof _fetch {
+        return this.options.fetch;
+    }
+
+    set fetch(value: typeof _fetch) {
+        this.options.fetch = value;
     }
 
     private get proxyURL(): IriString {
@@ -100,7 +108,9 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         (objects[0].resourceUri !== undefined || objects[0].shortResourceUri !== undefined) &&
                         !this.queue.has(objects[0].uid)
                     ) {
-                        return this.fetchData(objects[0]);
+                        return this.fetchData(objects[0], {
+                            fetch: options.fetch,
+                        });
                     } else {
                         return Promise.resolve({
                             beacon: this._mergeBeacon(objects[0], objects[1]) as BLESemBeacon,
@@ -153,6 +163,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                                 {
                                     resolveAll: true,
                                     persistence: false,
+                                    fetch: this.options.fetch,
                                 },
                                 existingObject as BLESemBeacon,
                             );
@@ -289,55 +300,63 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
         }
     }
 
-    protected fetchData(beacon: BLESemBeacon): Promise<{ beacon: BLESemBeacon; store: Store }> {
+    protected fetchData(
+        beacon: BLESemBeacon,
+        options: FetchOptions = {},
+    ): Promise<{ beacon: BLESemBeacon; store: Store }> {
         return new Promise((resolve, reject) => {
             if (this.queue.has(beacon.uid)) {
                 return resolve({ beacon, store: undefined });
             }
             this.queue.add(beacon.uid);
-            axios
-                .get(this.normalizeURI(beacon), {
-                    headers: {
-                        Accept: 'text/turtle;q=1.0,text/n3;q=0.9,application/rdf+xml;q=0.8',
-                    },
-                    withCredentials: false,
-                    timeout: this.options.timeout ?? 5000,
-                })
-                .then(async (result: AxiosResponse) => {
-                    const cacheTimeout = this._parseCacheControl(result);
-                    let resourceUri =
-                        result.request.responseUrl ??
-                        result.request.responseURL ??
-                        (result.request.res ? result.request.res.responseUrl : beacon.resourceUri);
-                    if (result.headers['x-final-url'] !== undefined) {
+            const fetcher = options.fetch ?? fetch;
+
+            // Headers
+            const headers = new Headers();
+            headers.set('Accept', 'text/turtle;q=1.0,text/n3;q=0.9,application/rdf+xml;q=0.8');
+            headers.set('User-Agent', 'SemBeacon/1.0');
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), this.options.timeout ?? 5000);
+            fetcher(this.normalizeURI(beacon), {
+                method: 'GET',
+                headers,
+                signal: controller.signal,
+            })
+                .then(async (response) => {
+                    clearTimeout(timeoutId);
+
+                    const data: string = await response.text();
+                    const cacheTimeout = this._parseCacheControl(response);
+                    let resourceUri: IriString = (response.url as IriString) ?? beacon.resourceUri;
+                    if (response.headers.has('x-final-url')) {
                         // Permanent URL fix
-                        resourceUri = result.headers['x-final-url'];
+                        resourceUri = response.headers.get('x-final-url') as IriString;
                     }
 
-                    const contentType = result.headers['content-type'] ?? 'text/turtle';
+                    const contentType = response.headers.get('content-type') ?? 'text/turtle';
 
                     this.logger('debug', `Fetched SemBeacon data from ${resourceUri}`);
                     let deserialized: any;
                     try {
-                        deserialized = RDFSerializer.deserializeFromString(resourceUri, result.data, contentType);
+                        deserialized = RDFSerializer.deserializeFromString(resourceUri, data, contentType);
                     } catch (ex) {
                         // Unable to deserialize
                         this.logger(
                             'error',
                             `Unable to deserialize SemBeacon data from ${resourceUri}: ${ex.message}`,
-                            result.data,
+                            data as any,
                         );
                         resolve({ beacon, store: undefined });
                         return;
                     }
                     if (deserialized === undefined) {
-                        this.logger('error', `Unable to deserialize SemBeacon data from ${resourceUri}!`, result.data);
+                        this.logger('error', `Unable to deserialize SemBeacon data from ${resourceUri}!`, data as any);
                         resolve({ beacon, store: undefined });
                         return;
                     }
 
                     let quads: Quad[] = [];
-                    if (contentType.includes('application/rdf+xml') || result.data.startsWith('<?xml version=')) {
+                    if (contentType.includes('application/rdf+xml') || data.startsWith('<?xml version=')) {
                         const parser = new RdfXmlParser({
                             baseIRI: resourceUri,
                         });
@@ -347,14 +366,14 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         parser.on('error', (err) => {
                             throw new Error('An error occured during RDF parsing: ' + err);
                         });
-                        parser.write(result.data);
+                        parser.write(data);
                         parser.end();
                     } else {
                         const mimetype = contentType.substring(0, contentType.indexOf(';'));
                         const parser = new Parser({
                             format: mimetype,
                         });
-                        quads = parser.parse(result.data);
+                        quads = parser.parse(data);
                     }
                     const store = new Store(quads);
 
@@ -380,23 +399,23 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         const namespaceIdSantized = beacon.namespaceId.toString().replaceAll('-', '');
                         const instanceIdSanitized = beacon.instanceId.toString(4, false).replaceAll('-', '');
                         const query = `
-                        PREFIX sembeacon: <http://purl.org/sembeacon/>
-                        SELECT ?beacon {
-                            { 
-                                ?beacon sembeacon:namespaceId "${namespaceIdSantized}"^^xsd:hexBinary 
-                            } 
-                            UNION
-                            { 
-                                ?beacon sembeacon:namespace ?namespace .
-                                ?namespace sembeacon:namespaceId "${namespaceIdSantized}"^^xsd:hexBinary .
-                            } .
-                            ?beacon sembeacon:instanceId "${instanceIdSanitized}"^^xsd:hexBinary .
-                        }`;
+                    PREFIX sembeacon: <http://purl.org/sembeacon/>
+                    SELECT ?beacon {
+                        { 
+                            ?beacon sembeacon:namespaceId "${namespaceIdSantized}"^^xsd:hexBinary 
+                        } 
+                        UNION
+                        { 
+                            ?beacon sembeacon:namespace ?namespace .
+                            ?namespace sembeacon:namespaceId "${namespaceIdSantized}"^^xsd:hexBinary .
+                        } .
+                        ?beacon sembeacon:instanceId "${instanceIdSanitized}"^^xsd:hexBinary .
+                    }`;
                         const bindings = await driver.queryBindings(query);
                         if (bindings.length > 0) {
                             const beaconURI = (bindings[0].get('beacon') as NamedNode).id;
                             beacon.resourceUri = beaconURI as IriString;
-                            deserialized = RDFSerializer.deserializeFromString(beacon.resourceUri, result.data);
+                            deserialized = RDFSerializer.deserializeFromString(beacon.resourceUri, data);
                             beacon = this._mergeBeacon(beacon, deserialized as BLEBeaconObject) as BLESemBeacon;
                             beacon.maxAge = cacheTimeout;
                             beacon.modifiedTimestamp = TimeService.now();
@@ -454,8 +473,8 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
         return online;
     }
 
-    private _parseCacheControl(response: AxiosResponse): number {
-        const header = response.headers['Cache-Control'] ?? response.headers['cache-control'];
+    private _parseCacheControl(response: Response): number {
+        const header = response.headers.get('Cache-Control') ?? response.headers.get('cache-control');
         if (!header) {
             return 30000; // Default cache timeout
         }
@@ -492,7 +511,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
     }
 }
 
-export interface SemBeaconServiceOptions extends DataServiceOptions {
+export interface SemBeaconServiceOptions extends DataServiceOptions, FetchOptions {
     /**
      * Minimum cache timeout in milliseconds
      */
@@ -515,7 +534,20 @@ export interface SemBeaconServiceOptions extends DataServiceOptions {
     timeout?: number;
 }
 
-export interface ResolveOptions {
+export interface ResolveOptions extends FetchOptions {
+    /**
+     * Resolve all beacons in the same namespace
+     */
     resolveAll?: boolean;
+    /**
+     * Persist resolved SemBeacon
+     */
     persistence?: boolean;
+}
+
+interface FetchOptions {
+    /**
+     * Custom fetch function
+     */
+    fetch?: typeof _fetch;
 }
