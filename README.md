@@ -34,6 +34,27 @@ npm install @sembeacon/openhps --save
 
 ## Usage
 
+### Parsing from payload
+```typescript
+ const payload = new Uint8Array([
+      2, 1, 6, 27, 255, 76, 0, 190, 172, 253, 165, 6, 147, 164, 226, 79, 177, 175, 207, 198, 235, 7, 100, 120, 37, 139,
+      29, 11, 60, 200, 0, 22, 22, 170, 254, 16, 241, 3, 116, 105, 110, 121, 117, 114, 108, 0, 53, 55, 109, 98, 98, 120,
+      50, 119, 0, 0, 0, 0, 0, 0, 0, 0,
+]);
+
+// Converts a payload to beacon object
+const beacon = new BLESemBeacon();
+beacon.parseAdvertisement(payload);
+```
+
+### Builder
+```typescript
+BLESemBeaconBuilder.create()
+    .instanceId('c187d748')
+    .calibratedRSSI(-56)
+    .resourceUri('https://bit.ly/3JsEnF9')
+    .build();
+```
 
 ## Contributors
 The framework is open source and is mainly developed by PhD Student Maxim Van de Wynckel as part of his research towards *Interoperable and Discoverable Indoor Positioning Systems* under the supervision of Prof. Dr. Beat Signer.
@@ -42,7 +63,7 @@ The framework is open source and is mainly developed by PhD Student Maxim Van de
 Use of OpenHPS, SemBeacon, contributions and feedback is highly appreciated. Please read our [contributing guidelines](CONTRIBUTING.md) for more information.
 
 ## License
-Copyright (C) 2019-2024 Maxim Van de Wynckel & Vrije Universiteit Brussel
+Copyright (C) 2019-2025 Maxim Van de Wynckel & Vrije Universiteit Brussel
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 

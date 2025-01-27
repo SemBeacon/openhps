@@ -11,10 +11,10 @@ export const SEMBEACON_FLAG_HAS_POSITION = 0x01 << 0;
 export const SEMBEACON_FLAG_PRIVATE = 0x01 << 1;
 export const SEMBEACON_FLAG_MOVING = 0x01 << 2;
 export const SEMBEACON_FLAG_HAS_SYSTEM = 0x01 << 3;
-export const SEMBEACON_FLAG_HAS_TELEMETRY = 0x01 << 4;
-export const SEMBEACON_FLAG_RESERVED_1 = 0x01 << 5;
-export const SEMBEACON_FLAG_RESERVED_2 = 0x01 << 6;
-export const SEMBEACON_FLAG_RESERVED_3 = 0x01 << 7;
+export const SEMBEACON_FLAG_HAS_OBSERVABLE = 0x01 << 4;
+export const SEMBEACON_FLAG_HAS_ACTUATOR = 0x01 << 5;
+export const SEMBEACON_FLAG_RESERVED_1 = 0x01 << 6;
+export const SEMBEACON_FLAG_RESERVED_2 = 0x01 << 7;
 export const SEMBEACON_FLAG_UNDEFINED = 0x00;
 
 /**
@@ -34,7 +34,8 @@ export class BLESemBeacon extends BLEBeaconObject {
     static readonly FLAGS = {
         SEMBEACON_FLAG_HAS_POSITION,
         SEMBEACON_FLAG_HAS_SYSTEM,
-        SEMBEACON_FLAG_HAS_TELEMETRY,
+        SEMBEACON_FLAG_HAS_OBSERVABLE,
+        SEMBEACON_FLAG_HAS_ACTUATOR,
         SEMBEACON_FLAG_MOVING,
         SEMBEACON_FLAG_PRIVATE,
     };
