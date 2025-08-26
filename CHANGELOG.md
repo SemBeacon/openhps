@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.7.0 (2025-08-26)
+
+
+### Features
+
+* sembeacon from eddystone-url ([0fca175](https://github.com/SemBeacon/openhps/commit/0fca17599842b9f243cec5d422d9e8c8bf929c94))
+
 ### 1.6.1 (2025-01-27)
 
 ## 1.6.0 (2024-04-21)
