@@ -11,9 +11,10 @@ import {
     SPARQLDataDriver,
     Store,
 } from '@openhps/rdf';
-import { BLEBeaconObject } from '@openhps/rf';
+import { BLEBeaconObject, BLEUUID } from '@openhps/rf';
 import fetch, { Headers } from 'cross-fetch';
 import { RdfXmlParser } from 'rdfxml-streaming-parser';
+import { sembeacon } from './terms';
 
 export interface ResolveResult {
     result: BLESemBeacon;
@@ -386,6 +387,23 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                             beacon.resourceUri = resourceUri;
                         }
                         deserialized.createdTimestamp = beacon.createdTimestamp;
+                        // If beacon does not have namespace/instance
+                        if (!beacon.namespaceId || !beacon.instanceId) {
+                            beacon.namespaceId = deserialized.namespaceId;
+                            beacon.instanceId = deserialized.instanceId;
+                            if (beacon.namespaceId === undefined && (deserialized as any)._namespace !== undefined) {
+                                const quads = store.getQuads(
+                                    DataFactory.namedNode((deserialized as any)._namespace),
+                                    DataFactory.namedNode(sembeacon.namespaceId),
+                                    undefined,
+                                    undefined,
+                                );
+                                if (quads.length > 0) {
+                                    beacon.namespaceId = BLEUUID.fromString(quads[0].object.value);
+                                }
+                            }
+                            beacon.uid = beacon.computeUID();
+                        }
                         beacon = this._mergeBeacon(beacon, deserialized) as BLESemBeacon;
                         beacon.maxAge = cacheTimeout;
                         beacon.modifiedTimestamp = TimeService.now();

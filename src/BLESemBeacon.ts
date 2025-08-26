@@ -73,6 +73,13 @@ export class BLESemBeacon extends BLEBeaconObject {
 
     @SerializableMember({
         rdf: {
+            predicate: sembeacon.namespace,
+        },
+    })
+    private _namespace?: IriString;
+
+    @SerializableMember({
+        rdf: {
             predicate: sembeacon.instanceId,
             datatype: xsd.hexBinary,
             serializer: (value: BLEUUID) => {
@@ -125,6 +132,23 @@ export class BLESemBeacon extends BLEBeaconObject {
     })
     maxAge?: number;
 
+    /**
+     * Create a SemBeacon from an Eddystone URL
+     * @param beacon Eddystone URL
+     * @returns SemBeacon instance
+     */
+    static fromEddystoneURL(beacon: BLEEddystoneURL): BLESemBeacon {
+        const semBeacon = new BLESemBeacon();
+        semBeacon.shortResourceUri = beacon.url as IriString;
+        semBeacon.calibratedRSSI = beacon.calibratedRSSI;
+        semBeacon.txPower = beacon.txPower;
+        semBeacon.flags = SEMBEACON_FLAG_UNDEFINED;
+        if (beacon.uid !== undefined) {
+            semBeacon.uid = beacon.uid;
+        }
+        return semBeacon;
+    }
+
     isValid(): boolean {
         return (
             (this.resourceUri !== undefined || this.shortResourceUri !== undefined) &&
@@ -138,7 +162,10 @@ export class BLESemBeacon extends BLEBeaconObject {
         const view = new DataView(manufacturerData.buffer, 0);
         if (
             manufacturerData.byteLength < 24 ||
-            !BufferUtils.arrayBuffersAreEqual(manufacturerData.buffer.slice(0, 2), Uint8Array.from([0xbe, 0xac]).buffer)
+            !BufferUtils.arrayBuffersAreEqual(
+                manufacturerData.buffer.slice(0, 2) as ArrayBuffer,
+                Uint8Array.from([0xbe, 0xac]).buffer,
+            )
         ) {
             return this;
         }

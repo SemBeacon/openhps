@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { SemBeaconService, BLESemBeaconBuilder, BLESemBeacon, ResolveResult } from '../../src/';
 import { DataSerializer, MemoryDataService } from '@openhps/core';
-import { BLEUUID } from '@openhps/rf';
+import { BLEEddystoneURLBuilder, BLEUUID } from '@openhps/rf';
 import { Store } from '@openhps/rdf';
 
 describe('SemBeaconService', () => {
@@ -78,6 +78,18 @@ describe('SemBeaconService', () => {
                         expect(beacon.position.toVector3().x).to.not.be.undefined;
                         expect(beacon.position.toVector3().x).to.not.eq(0);
                     });
+                    done();
+                }).catch(done);
+        });
+
+        it('should resolve an Eddystone-URL without manufacturer data', (done) => {
+            BLEEddystoneURLBuilder.create()
+                .url('https://bit.ly/3JsEnF9')
+                .build().then(beacon => {
+                    return service.insert(beacon.uid, BLESemBeacon.fromEddystoneURL(beacon));
+                }).then((insertedObject: BLESemBeacon) => {
+                    expect(insertedObject).to.not.be.undefined;
+                    expect(insertedObject).to.be.instanceOf(BLESemBeacon);
                     done();
                 }).catch(done);
         });

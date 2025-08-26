@@ -1,9 +1,10 @@
 {
+    "loader": "ts-node/esm",
     "diff": true,
     "require": [
         "reflect-metadata",
-        "test/tsconfig.js", 
-        "source-map-support/register"],
+        "test/tsconfig.js"
+    ],
     "extension": ["ts"],
     "package": "../package.json",
     "reporter": "spec",
