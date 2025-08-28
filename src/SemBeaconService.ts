@@ -181,8 +181,8 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                             reject(
                                 new Error(
                                     `Unable to resolve SemBeacon data! 
-                                ns=${object.namespaceId.toString()}, 
-                                id=${object.instanceId.toString(4, false)}, 
+                                ns=${object.namespaceId ? object.namespaceId.toString() : 'undefined'}, 
+                                id=${object.instanceId ? object.instanceId.toString(4, false) : 'undefined'}, 
                                 uri=${object.resourceUri}, 
                                 shortURI=${object.shortResourceUri}`,
                                 ),
@@ -409,6 +409,10 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                         beacon.modifiedTimestamp = TimeService.now();
                         return Promise.resolve({ store, beacon });
                     } else if (deserialized instanceof BLEBeaconObject) {
+                        if (beacon.instanceId === undefined || beacon.namespaceId === undefined) {
+                            return Promise.resolve({ store, beacon });
+                        }
+
                         // Query to find the SemBeacon
                         const driver = new SPARQLDataDriver(BLESemBeacon, {
                             sources: [store],
