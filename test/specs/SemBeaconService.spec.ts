@@ -2,7 +2,15 @@ import 'mocha';
 import { expect } from 'chai';
 import { SemBeaconService, BLESemBeaconBuilder, BLESemBeacon, ResolveResult } from '../../src/';
 import { DataSerializer, MemoryDataService } from '@openhps/core';
-import { BLEEddystoneURLBuilder, BLEUUID } from '@openhps/rf';
+import {
+    BLEAltBeaconBuilder,
+    BLEBeaconObject,
+    BLEEddystoneURL,
+    BLEEddystoneURLBuilder,
+    BLEiBeacon,
+    BLEiBeaconBuilder,
+    BLEUUID,
+} from '@openhps/rf';
 import { Store } from '@openhps/rdf';
 
 describe('SemBeaconService', () => {
@@ -57,6 +65,50 @@ describe('SemBeaconService', () => {
                     expect(insertedObject.object).to.not.be.undefined;
                     done();
                 }).catch(done);
+        });
+    });
+
+    describe('insert() of other beacons', () => {
+        it('should resolve with the stored iBeacon', async () => {
+            const beacon = await BLEiBeaconBuilder.create()
+                .proximityUUID(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
+                .major(1)
+                .minor(2)
+                .build();
+            beacon.uid = beacon.computeUID();
+            const inserted = await service.insert(beacon.uid, beacon);
+            expect(inserted).to.be.instanceOf(BLEiBeacon);
+            expect(inserted.uid).to.eq(beacon.uid);
+            const stored = await service.findByUID(beacon.uid);
+            expect(stored.uid).to.eq(beacon.uid);
+        });
+
+        it('should resolve when updating an existing Eddystone-URL', async () => {
+            const beacon = await BLEEddystoneURLBuilder.create().url('https://example.org').build();
+            beacon.uid = beacon.computeUID();
+            await service.insert(beacon.uid, beacon);
+            const updated = await service.insert(beacon.uid, beacon);
+            expect(updated).to.be.instanceOf(BLEEddystoneURL);
+        });
+
+        it('should emit the stored beacon', async () => {
+            const beacon = await BLEAltBeaconBuilder.create()
+                .proximityUUID(BLEUUID.fromString('77f340db-ac0d-20e8-aa3a-f656a29f236c'))
+                .major(3)
+                .minor(4)
+                .build();
+            beacon.uid = beacon.computeUID();
+            const emitted = new Promise<BLEBeaconObject>((resolve) => {
+                const listener = (b: BLEBeaconObject) => {
+                    if (b.uid === beacon.uid) {
+                        service.removeListener('beacon', listener);
+                        resolve(b);
+                    }
+                };
+                service.on('beacon', listener);
+            });
+            await service.insert(beacon.uid, beacon);
+            expect((await emitted).uid).to.eq(beacon.uid);
         });
     });
 

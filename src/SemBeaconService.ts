@@ -218,6 +218,7 @@ export class SemBeaconService extends DataObjectService<BLEBeaconObject> {
                     })
                     .then((beacon) => {
                         this.emitAsync('beacon', beacon);
+                        resolve(beacon);
                     })
                     .catch(reject);
             }
